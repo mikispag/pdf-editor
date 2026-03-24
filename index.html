@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Editor</title>
+
+
+    <link rel="stylesheet" href="pdf-editor.css">
+</head>
+<body>
+    <main>
+        <div class="card">
+            <input type="file" id="pdf-file-input" accept="application/pdf" class="hidden">
+
+            <div class="pdf-editor-layout">
+                <!-- LEFT SIDEBAR: Tools -->
+                <aside class="pdf-left-sidebar" role="toolbar" aria-label="Drawing tools">
+                    <button id="pdf-btn-select" class="sidebar-tool-btn active" data-tooltip="Select" data-tooltip-shortcut="V">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="m13 13 6 6"/></svg>
+                        <span>Select</span>
+                    </button>
+                    <button id="pdf-btn-delete" class="sidebar-tool-btn delete-btn" disabled data-tooltip="Delete selected" data-tooltip-shortcut="Del">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        <span>Delete</span>
+                    </button>
+
+                    <div class="sidebar-separator"></div>
+                    <div class="sidebar-group-label">Shapes</div>
+
+                    <button id="pdf-btn-rect" class="sidebar-tool-btn" data-tooltip="Rectangle" data-tooltip-shortcut="R">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+                        <span>Box</span>
+                    </button>
+                    <button id="pdf-btn-ellipse" class="sidebar-tool-btn" data-tooltip="Ellipse" data-tooltip-shortcut="O">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                        <span>Circle</span>
+                    </button>
+                    <button id="pdf-btn-line" class="sidebar-tool-btn" data-tooltip="Line" data-tooltip-shortcut="L">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+                        <span>Line</span>
+                    </button>
+                    <button id="pdf-btn-arrow" class="sidebar-tool-btn" data-tooltip="Arrow" data-tooltip-shortcut="A">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        <span>Arrow</span>
+                    </button>
+
+                    <div class="sidebar-separator"></div>
+                    <div class="sidebar-group-label">Draw</div>
+
+                    <button id="pdf-btn-pen" class="sidebar-tool-btn" data-tooltip="Pen" data-tooltip-shortcut="P">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13c3.6-8 14.4-8 18 0"/><path d="M21 11v2"/></svg>
+                        <span>Pen</span>
+                    </button>
+                    <button id="pdf-btn-highlight" class="sidebar-tool-btn" data-tooltip="Highlight" data-tooltip-shortcut="H">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 2-7 7 3 3 7-7-3-3z"/></svg>
+                        <span>Highlight</span>
+                    </button>
+                    <button id="pdf-btn-eraser" class="sidebar-tool-btn" data-tooltip="Eraser" data-tooltip-shortcut="E">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+                        <span>Eraser</span>
+                    </button>
+                    <button id="pdf-btn-redact" class="sidebar-tool-btn" data-tooltip="Redact" data-tooltip-shortcut="D">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/>
+                        </svg>
+                        <span>Redact</span>
+                    </button>
+                    <button id="pdf-btn-crop" class="sidebar-tool-btn" data-tooltip="Crop">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 2v4H2"/><path d="M18 22v-4h4"/><rect x="6" y="6" width="12" height="12"/>
+                        </svg>
+                        <span>Crop</span>
+                    </button>
+
+                    <div class="sidebar-separator"></div>
+
+                    <button id="pdf-btn-text" class="sidebar-tool-btn" data-tooltip="Text" data-tooltip-shortcut="T">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                        <span>Text</span>
+                    </button>
+                    <button id="pdf-btn-note" class="sidebar-tool-btn" data-tooltip="Sticky note" data-tooltip-shortcut="N">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span>Note</span>
+                    </button>
+                    <button id="pdf-btn-signature" class="sidebar-tool-btn" data-tooltip="Signature" data-tooltip-shortcut="S">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 20c1-1 2.5-3.5 3.5-5 1.5-2 2.5-2 3.5 0s2 2 3.5 0 2.5-3.5 3.5-5c.5-1 1.5-2 3-1"/>
+                            <line x1="2" y1="22" x2="22" y2="22"/>
+                        </svg>
+                        <span>Sign</span>
+                    </button>
+                    <button id="pdf-btn-stamp" class="sidebar-tool-btn" data-tooltip="Stamp">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 22h14"/><path d="M12 17V6"/><rect x="6" y="2" width="12" height="4" rx="1"/>
+                        </svg>
+                        <span>Stamp</span>
+                    </button>
+
+                    <div class="sidebar-spacer"></div>
+
+                    <button id="pdf-btn-undo" class="sidebar-tool-btn" disabled data-tooltip="Undo" data-tooltip-shortcut="Ctrl+Z">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        <span>Undo</span>
+                    </button>
+                    <button id="pdf-btn-redo" class="sidebar-tool-btn" disabled data-tooltip="Redo" data-tooltip-shortcut="Ctrl+Shift+Z">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
+                        <span>Redo</span>
+                    </button>
+                </aside>
+
+                <!-- CENTER: Context Bar + PDF Pages -->
+                <div class="pdf-center-area">
+                    <div class="pdf-context-bar">
+                        <div id="ctx-thickness" class="context-control">
+                            <span>Thickness</span>
+                            <input type="range" id="pdf-thickness" min="1" max="20" value="2" aria-label="Thickness">
+                            <span id="pdf-thickness-val" class="value-label">2px</span>
+                            <svg id="stroke-preview" class="stroke-preview" width="40" height="20" viewBox="0 0 40 20">
+                                <line x1="4" y1="10" x2="36" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div id="ctx-fontfamily" class="context-control hidden">
+                            <span>Font</span>
+                            <select id="pdf-font-family" class="font-family-select" aria-label="Font family">
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="TimesRoman">Times New Roman</option>
+                                <option value="Courier">Courier</option>
+                            </select>
+                        </div>
+                        <div id="ctx-fontsize" class="context-control hidden">
+                            <span>Size</span>
+                            <input type="number" id="pdf-font-size" min="1" max="200" value="16" class="font-size-input" aria-label="Font size">
+                            <span class="value-label">px</span>
+                        </div>
+                        <label id="ctx-fill" class="context-control">
+                            <input type="checkbox" id="pdf-fill-toggle" checked>
+                            Fill
+                        </label>
+
+                        <div class="context-separator" aria-hidden="true"></div>
+
+                        <!-- Color: presets + picker + hex/RGB inputs -->
+                        <div id="ctx-color" class="context-control color-control">
+                            <div class="color-presets" role="radiogroup" aria-label="Preset colors">
+                                <div class="color-circle color-swatch-black selected" role="radio" aria-checked="true" tabindex="0" data-color="black" data-tooltip="Black"></div>
+                                <div class="color-circle color-swatch-blue" role="radio" aria-checked="false" tabindex="0" data-color="blue" data-tooltip="Blue"></div>
+                                <div class="color-circle color-swatch-red" role="radio" aria-checked="false" tabindex="0" data-color="red" data-tooltip="Red"></div>
+                                <div class="color-circle color-swatch-green" role="radio" aria-checked="false" tabindex="0" data-color="green" data-tooltip="Green"></div>
+                                <div class="color-circle color-swatch-white" role="radio" aria-checked="false" tabindex="0" data-color="white" data-tooltip="White"></div>
+                            </div>
+                            <input type="color" id="pdf-color-picker" value="#000000" data-tooltip="Pick a color" class="color-picker-input" aria-label="Pick a color">
+                            <input type="text" id="pdf-color-hex" value="#000000" maxlength="7" class="color-hex-input" data-tooltip="Hex color" spellcheck="false" aria-label="Hex color">
+                        </div>
+
+                        <div class="context-separator" aria-hidden="true"></div>
+
+                        <div id="ctx-opacity" class="context-control">
+                            <span>Opacity</span>
+                            <input type="range" id="pdf-opacity" min="0" max="100" value="100" aria-label="Opacity">
+                            <span id="pdf-opacity-val" class="value-label">100%</span>
+                        </div>
+
+                        <div class="zoom-controls">
+                            <button id="pdf-btn-zoom-out" class="zoom-btn" data-tooltip="Zoom out" data-tooltip-shortcut="-">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </button>
+                            <span id="pdf-zoom-label" class="zoom-label">150%</span>
+                            <button id="pdf-btn-zoom-in" class="zoom-btn" data-tooltip="Zoom in" data-tooltip-shortcut="+">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </button>
+                        </div>
+
+                        <button id="pdf-btn-theme" class="theme-toggle-btn" data-tooltip="Toggle dark mode">
+                            <svg id="theme-icon-sun" class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                            </svg>
+                            <svg id="theme-icon-moon" class="theme-icon hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                        </button>
+
+                        <button id="pdf-btn-download" class="btn ml-auto">
+                            Download PDF
+                        </button>
+                    </div>
+
+                    <div id="find-bar" class="find-bar hidden">
+                        <input type="text" id="find-input" placeholder="Find in document..." aria-label="Find text" autocomplete="off">
+                        <span id="find-count" class="find-count"></span>
+                        <button id="find-prev" class="find-nav-btn" data-tooltip="Previous match" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+                        </button>
+                        <button id="find-next" class="find-nav-btn" data-tooltip="Next match" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <button id="find-close" class="find-close-btn" data-tooltip="Close">&times;</button>
+                    </div>
+
+                    <div class="pdf-pages-scroll" id="pdf-pages-scroll">
+                        <div id="pdf-pages-container"></div>
+                        <div id="pdf-empty-state" class="pdf-empty-state pdf-drop-zone">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" x2="12" y1="18" y2="12"/>
+                                <line x1="9" x2="15" y1="15" y2="15"/>
+                            </svg>
+                            <span class="drop-zone-title">Click to upload a PDF</span>
+                            <span class="drop-zone-subtitle">or drag and drop a file here</span>
+                            <p class="drop-zone-formats">Supports .pdf files</p>
+                        </div>
+                        <div id="page-indicator" class="page-indicator" role="status" aria-live="polite">
+                            <span>Page </span>
+                            <span id="page-indicator-current" class="page-indicator-num">1</span>
+                            <span> of </span>
+                            <span id="page-indicator-total">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDEBAR: Page Thumbnails -->
+                <aside class="pdf-right-sidebar" role="complementary" aria-label="Page thumbnails">
+                    <div class="right-sidebar-header">
+                        <div class="header-row">
+                            <span>Pages</span>
+                            <button id="pdf-collapse-sidebar" class="collapse-btn" data-tooltip="Collapse">◀</button>
+                        </div>
+                        <div class="header-actions">
+                            <button id="pdf-btn-merge">+ Merge</button>
+                            <button id="pdf-btn-split">Split</button>
+                        </div>
+                    </div>
+                    <div id="pdf-thumbnail-list" class="thumbnail-list"></div>
+                </aside>
+                <button id="pdf-expand-sidebar" class="expand-sidebar-btn hidden" data-tooltip="Show pages">▶</button>
+            </div>
+
+            <input type="text" id="pdf-text-input" class="hidden" placeholder="Type text..." autocomplete="off">
+
+            <!-- Split Modal -->
+            <div id="split-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="split-modal-title">
+                <div class="modal-content">
+                    <h2 id="split-modal-title">Split PDF</h2>
+                    <p class="modal-description">Enter page ranges separated by commas (e.g., "1-3, 4-6, 7")</p>
+                    <input type="text" id="split-range-input" placeholder="e.g. 1-3, 4-6, 7" class="mt-sm">
+                    <div id="split-preview" class="range-preview"></div>
+                    <div id="split-error" class="range-error"></div>
+                    <div class="modal-actions">
+                        <button id="pdf-btn-split-cancel" class="btn btn-outline">Cancel</button>
+                        <button id="pdf-btn-split-confirm" class="btn">Split &amp; Download</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden file input for merge -->
+            <input type="file" id="pdf-merge-input" accept="application/pdf" class="hidden">
+
+            <!-- Signature Modal -->
+            <div id="signature-modal-overlay" class="modal-overlay hidden">
+                <div class="signature-modal" role="dialog" aria-modal="true" aria-labelledby="signature-modal-title">
+                    <h3 id="signature-modal-title">Draw your signature</h3>
+                    <canvas id="signature-canvas" width="500" height="200"></canvas>
+                    <div class="signature-modal-actions">
+                        <button id="signature-clear" class="btn btn-outline">Clear</button>
+                        <div class="signature-spacer"></div>
+                        <button id="signature-cancel" class="btn btn-outline">Cancel</button>
+                        <button id="signature-apply" class="btn">Apply</button>
+                    </div>
+                    <label class="signature-save-label">
+                        <input type="checkbox" id="signature-save-check" checked> Save for reuse
+                    </label>
+                </div>
+            </div>
+
+            <!-- Stamp Modal -->
+            <div id="stamp-modal-overlay" class="modal-overlay hidden">
+                <div class="stamp-modal" role="dialog" aria-modal="true" aria-label="Choose stamp">
+                    <h3>Choose stamp</h3>
+                    <div class="stamp-presets">
+                        <button class="stamp-preset-btn" data-stamp="DRAFT">DRAFT</button>
+                        <button class="stamp-preset-btn" data-stamp="CONFIDENTIAL">CONFIDENTIAL</button>
+                        <button class="stamp-preset-btn" data-stamp="APPROVED">APPROVED</button>
+                        <button class="stamp-preset-btn" data-stamp="REVIEWED">REVIEWED</button>
+                        <button class="stamp-preset-btn" data-stamp="FINAL">FINAL</button>
+                    </div>
+                    <div class="stamp-custom">
+                        <input type="text" id="stamp-custom-input" placeholder="Custom text..." maxlength="30" aria-label="Custom stamp text">
+                        <button id="stamp-custom-apply" class="btn">Apply</button>
+                    </div>
+                    <div class="stamp-modal-footer">
+                        <button id="stamp-cancel" class="btn btn-outline">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="crop-toolbar" class="crop-toolbar hidden">
+        <button id="crop-apply" class="btn">Apply crop</button>
+        <button id="crop-cancel" class="btn btn-outline">Cancel</button>
+    </div>
+
+    <div id="tooltip" class="tooltip" role="tooltip"></div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <span class="loading-label"></span>
+    </div>
+
+    <div id="confirm-modal-overlay" class="modal-overlay hidden">
+        <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+            <div class="confirm-modal-header">
+                <div class="confirm-modal-icon"></div>
+                <h3 id="confirm-modal-title"></h3>
+            </div>
+            <p id="confirm-modal-message"></p>
+            <div class="confirm-modal-actions">
+                <button id="confirm-modal-cancel" class="btn btn-outline">Cancel</button>
+                <button id="confirm-modal-confirm" class="btn"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="shortcut-panel-overlay" class="modal-overlay hidden">
+        <div class="shortcut-panel" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+            <h3>Keyboard shortcuts</h3>
+            <div class="shortcut-columns">
+                <div class="shortcut-group">
+                    <h4>Tools</h4>
+                    <div class="shortcut-list" id="shortcut-list-tools"></div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>Actions</h4>
+                    <div class="shortcut-list" id="shortcut-list-actions"></div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>Navigation</h4>
+                    <div class="shortcut-list" id="shortcut-list-nav"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module" src="pdf-editor.js"></script>
+</body>
+</html>
