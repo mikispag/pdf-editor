@@ -745,36 +745,183 @@ input[type="number"]:focus {
 }
 
 @media (max-width: 600px) {
+    /* Remove excess outer padding */
+    main { padding: 0; }
+    .card {
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* Full-height layout */
+    .pdf-editor-layout {
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh; /* accounts for mobile browser chrome */
+    }
+
+    /* Right sidebar — explicitly remove from layout */
+    .pdf-right-sidebar { display: none; }
+
+    /* Horizontal toolbar */
     .pdf-left-sidebar {
         width: auto;
         flex-direction: row;
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 4px 8px;
+        padding: 4px 6px;
         overflow-x: auto;
         overflow-y: hidden;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
     }
+    .pdf-left-sidebar::-webkit-scrollbar { display: none; }
 
     .pdf-left-sidebar .sidebar-group-label { display: none; }
 
     .pdf-left-sidebar .sidebar-separator {
         width: 1px;
         height: 24px;
-        margin: 0 4px;
+        margin: 0 2px;
+        flex-shrink: 0;
     }
 
     .pdf-left-sidebar .sidebar-spacer { display: none; }
 
     .sidebar-tool-btn {
         flex-direction: row;
-        padding: 6px 8px;
+        padding: 10px;
         font-size: 0;
-        min-width: 32px;
+        min-width: 44px;
+        min-height: 44px;
+        flex-shrink: 0;
     }
 
-    .pdf-editor-layout { flex-direction: column; height: auto; }
+    /* Compact context bar — horizontal scroll instead of wrapping */
+    .pdf-context-bar {
+        padding: 4px 8px;
+        gap: 6px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        min-height: 38px;
+    }
+    .pdf-context-bar::-webkit-scrollbar { display: none; }
 
-    .pdf-pages-scroll { min-height: 60vh; }
+    .context-control {
+        padding: 3px 6px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    /* Visually hide labels but keep accessible to screen readers */
+    .context-control > span:first-child:not(.value-label) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    /* Hide hex input on mobile — too tiny to use */
+    .color-hex-input { display: none; }
+
+    /* Narrower range inputs */
+    .context-control input[type="range"] { width: 48px; }
+
+    /* Hide stroke preview on mobile */
+    .stroke-preview { display: none; }
+
+    /* Compact context separator */
+    .context-separator { margin: 0; height: 20px; }
+
+    /* Compact download button — icon only */
+    #pdf-btn-download {
+        padding: 8px 12px;
+        font-size: 0;
+        min-width: 40px;
+    }
+    #pdf-btn-download::before {
+        content: '';
+        display: block;
+        width: 18px;
+        height: 18px;
+        background: currentColor;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E") center/contain no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    /* Zoom controls tight */
+    .zoom-controls { margin-left: 0; gap: 2px; flex-shrink: 0; }
+    .zoom-label { min-width: 34px; font-size: 11px; }
+
+    /* Pages scroll fills remaining space */
+    .pdf-pages-scroll {
+        flex: 1;
+        min-height: 0;
+        padding: 12px 8px;
+    }
+
+    /* Compact empty state */
+    .pdf-empty-state { padding: 2rem 1rem; }
+    .pdf-empty-state svg { width: 48px; height: 48px; }
+
+    /* Signature modal fits on mobile */
+    .signature-modal { padding: 16px; max-width: 95%; }
+    #signature-canvas { height: 160px; }
+
+    /* Shortcut panel — single column on mobile */
+    .shortcut-columns {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .shortcut-panel { padding: 16px; }
+
+    /* Full-width toasts on mobile — slide down instead of from right */
+    .toast-container { left: 8px; right: 8px; }
+    .toast {
+        max-width: 100%;
+        animation-name: toastInMobile;
+    }
+    .toast.removing {
+        animation-name: toastOutMobile;
+    }
+
+    /* Find bar compact */
+    .find-bar { padding: 4px 8px; gap: 4px; }
+    .find-bar input { max-width: none; }
+    .find-count { min-width: 40px; font-size: 0.7rem; }
+
+    /* Crop toolbar */
+    .crop-toolbar { bottom: 24px; }
+
+    /* Page indicator closer to bottom */
+    .page-indicator { bottom: 8px; font-size: 12px; }
+
+    /* Compact modals */
+    .confirm-modal { padding: 16px; }
+    .stamp-modal { padding: 16px; }
+    .sticky-note-popup { max-width: calc(100vw - 32px); }
+
+    /* Drop zone uniform spacing */
+    .pdf-drop-zone { margin: 0.5rem; }
+}
+
+/* Mobile toast animations — outside media query for keyframes compatibility */
+@keyframes toastInMobile {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+@keyframes toastOutMobile {
+    from { transform: translateY(0);     opacity: 1; }
+    to   { transform: translateY(-100%); opacity: 0; }
 }
 
 /* ============================================
