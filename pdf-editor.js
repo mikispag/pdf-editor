@@ -824,6 +824,23 @@ async function handleFileUpload(e) {
         annotations = [];
         emptyState.classList.add('hidden');
 
+        // On mobile, auto-fit first page fully within viewport
+        if (window.innerWidth <= 600) {
+            const firstPage = await pdf.getPage(1);
+            const unscaledVp = firstPage.getViewport({ scale: 1 });
+            const scrollEl = document.getElementById('pdf-pages-scroll');
+            // Read padding from CSS so this stays in sync with the stylesheet
+            const cs = getComputedStyle(scrollEl);
+            const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+            const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+            const availW = scrollEl.clientWidth - padX;
+            const availH = scrollEl.clientHeight - padY;
+            if (availW > 0 && availH > 0) {
+                const fitScale = Math.min(availW / unscaledVp.width, availH / unscaledVp.height);
+                scale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, fitScale));
+            }
+        }
+
         for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
             const viewport = page.getViewport({ scale });
@@ -872,6 +889,7 @@ async function handleFileUpload(e) {
         editingIndex = -1;
         hideTextInput();
         updateDeleteButton();
+        updateZoomUI();
         hideLoading();
         showStatus('PDF loaded', 'success');
         renderThumbnails();
@@ -1074,6 +1092,15 @@ async function reloadPagesFromBytes() {
     }
 }
 
+function updateZoomUI() {
+    const label = document.getElementById('pdf-zoom-label');
+    if (label) label.textContent = Math.round(scale * 100) + '%';
+    const zoomIn = document.getElementById('pdf-btn-zoom-in');
+    const zoomOut = document.getElementById('pdf-btn-zoom-out');
+    if (zoomIn) zoomIn.disabled = scale >= ZOOM_MAX;
+    if (zoomOut) zoomOut.disabled = scale <= ZOOM_MIN;
+}
+
 // ==========================================
 // Zoom
 // ==========================================
@@ -1099,13 +1126,7 @@ async function setZoom(newScale) {
         scrollEl.scrollLeft = centerX * scale - scrollEl.clientWidth / 2;
         scrollEl.scrollTop = centerY * scale - scrollEl.clientHeight / 2;
 
-        const label = document.getElementById('pdf-zoom-label');
-        if (label) label.textContent = Math.round(scale * 100) + '%';
-
-        const zoomIn = document.getElementById('pdf-btn-zoom-in');
-        const zoomOut = document.getElementById('pdf-btn-zoom-out');
-        if (zoomIn) zoomIn.disabled = scale >= ZOOM_MAX;
-        if (zoomOut) zoomOut.disabled = scale <= ZOOM_MIN;
+        updateZoomUI();
 
         selectedIndex = -1;
         updateDeleteButton();
