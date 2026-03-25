@@ -891,7 +891,6 @@ async function handleFileUpload(e) {
         updateDeleteButton();
         updateZoomUI();
         hideLoading();
-        showStatus('PDF loaded', 'success');
         renderThumbnails();
         if (pageIndicator) {
             pageIndicator.updateTotal();
@@ -2202,7 +2201,6 @@ function deleteSelected() {
     selectedIndex = -1;
     updateDeleteButton();
     redrawAnnotations(pageIdx);
-    showStatus('Annotation deleted', 'info', { undoable: true });
 }
 
 function updateDeleteButton() {
@@ -2918,7 +2916,6 @@ async function mergePDF() {
             renderThumbnails();
             if (pageIndicator) { pageIndicator.updateTotal(); pageIndicator.setupObserver(); }
             hideLoading();
-            showStatus('Merged ' + newPdf.numPages + ' pages', 'success');
         } catch (err) {
             hideLoading();
             console.error(err);
@@ -3067,7 +3064,6 @@ async function splitPDF() {
         }
         hideSplitModal();
         hideLoading();
-        showStatus('Split into ' + ranges.length + ' file(s)', 'success');
     } catch (err) {
         hideLoading();
         console.error(err);
@@ -3534,7 +3530,6 @@ async function applyCrop() {
             pageIndicator.setupObserver();
         }
 
-        showStatus('Page cropped', 'success');
     } catch (err) {
         console.error(err);
         showStatus('Error cropping: ' + err.message, 'error');
@@ -3782,7 +3777,6 @@ async function downloadPDF() {
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
         hideLoading();
-        showStatus("PDF downloaded", "success");
     } catch (err) {
         hideLoading();
         console.error(err);
