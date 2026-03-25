@@ -763,39 +763,31 @@ input[type="number"]:focus {
     /* Right sidebar — explicitly remove from layout */
     .pdf-right-sidebar { display: none; }
 
-    /* Horizontal toolbar */
+    /* Wrapped toolbar */
     .pdf-left-sidebar {
         width: auto;
         flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         border-right: none;
         border-bottom: 1px solid var(--border);
         padding: 4px 6px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        overscroll-behavior: contain;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+        overflow: visible;
+        gap: 2px;
     }
-    .pdf-left-sidebar::-webkit-scrollbar { display: none; }
 
     .pdf-left-sidebar .sidebar-group-label { display: none; }
-
-    .pdf-left-sidebar .sidebar-separator {
-        width: 1px;
-        height: 24px;
-        margin: 0 2px;
-        flex-shrink: 0;
-    }
-
+    .pdf-left-sidebar .sidebar-separator { display: none; }
     .pdf-left-sidebar .sidebar-spacer { display: none; }
 
     .sidebar-tool-btn {
         flex-direction: row;
-        padding: 10px;
+        padding: 8px;
         font-size: 0;
-        min-width: 44px;
-        min-height: 44px;
+        min-width: 40px;
+        min-height: 40px;
         flex-shrink: 0;
+        width: auto;
     }
 
     /* Compact context bar — horizontal scroll instead of wrapping */
