@@ -22,14 +22,14 @@ A client-side PDF editor built with vanilla JavaScript. All processing happens i
 - Fill/stroke toggle
 
 **Document Management**
-- Merge multiple PDFs
+- Merge multiple PDFs (resizable pane)
 - Split PDF by page ranges
 - Page thumbnails with drag-to-reorder
 - Find text in document
 - Zoom in/out (0.5x–3x)
 
 **UX**
-- Undo/redo
+- Undo/redo (NOTICE: There is an issue while deleting +3 card immediately)
 - Keyboard shortcuts for every tool
 - Dark mode
 - Drag-and-drop file upload

@@ -3784,4 +3784,43 @@ async function downloadPDF() {
     }
 }
 
+
+const sidebar = document.querySelector('.pdf-right-sidebar');
+const resizer = document.querySelector('.pdf-sidebar-resizer');
+
+if (sidebar && resizer) {
+  let startX, startWidth;
+
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+  resizer.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+
+    startX = e.clientX;
+    startWidth = sidebar.getBoundingClientRect().width;
+
+    const min = parseFloat(getComputedStyle(sidebar).minWidth);
+    const max = parseFloat(getComputedStyle(sidebar).maxWidth);
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    const onMove = (ev) => {
+        const dx = ev.clientX - startX;
+        sidebar.style.width = `${clamp(startWidth - dx, min, max)}px`; // was + dx
+    };
+
+    const onUp = () => {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  });
+}
+
+
 init();
